@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>For You ❤️</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            min-height: 100vh;
+            background: linear-gradient(to bottom, #0a0e27 0%, #1a1a3e 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: 'Georgia', serif;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .stars {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .star {
+            position: absolute;
+            background: white;
+            border-radius: 50%;
+            animation: twinkle 3s infinite, float 20s infinite linear;
+        }
+
+        @keyframes twinkle {
+            0%, 100% { opacity: 0.3; transform: scale(1); }
+            50% { opacity: 1; transform: scale(1.2); }
+        }
+
+        @keyframes float {
+            0% { transform: translateX(0) translateY(0); }
+            100% { transform: translateX(-100px) translateY(-50px); }
+        }
+
+        .shooting-star {
+            position: absolute;
+            width: 2px;
+            height: 2px;
+            background: white;
+            border-radius: 50%;
+            box-shadow: 0 0 10px 2px rgba(255,255,255,0.8);
+            animation: shoot 3s ease-out infinite;
+        }
+
+        @keyframes shoot {
+            0% {
+                transform: translateX(0) translateY(0);
+                opacity: 1;
+            }
+            100% {
+                transform: translateX(-300px) translateY(300px);
+                opacity: 0;
+            }
+        }
+
+        .container {
+            position: relative;
+            z-index: 10;
+            display: flex;
+            gap: 60px;
+            flex-wrap: wrap;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .envelope-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .envelope-label {
+            color: white;
+            font-size: 18px;
+            text-align: center;
+            font-style: italic;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.5);
+            max-width: 250px;
+        }
+
+        .envelope-wrapper {
+            position: relative;
+            width: 250px;
+            height: 170px;
+        }
+
+        .envelope {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+
+        .envelope:hover {
+            transform: scale(1.05);
+        }
+
+        .envelope-base {
+            width: 100%;
+            height: 100%;
+            background: #f4e8d8;
+            border: 2px solid #d4a574;
+            position: relative;
+            z-index: 3;
+        }
+
+        .envelope-flap {
+            width: 0;
+            height: 0;
+            border-left: 125px solid transparent;
+            border-right: 125px solid transparent;
+            border-top: 85px solid #d4a574;
+            position: absolute;
+            top: 0;
+            left: 0;
+            transform-origin: top center;
+            transition: transform 0.6s ease;
+            z-index: 5;
+        }
+
+        .envelope-flap-inner {
+            width: 0;
+            height: 0;
+            border-left: 121px solid transparent;
+            border-right: 121px solid transparent;
+            border-top: 82px solid #f4e8d8;
+            position: absolute;
+            top: -82px;
+            left: -121px;
+        }
+
+        .envelope.opened .envelope-flap {
+            transform: rotateX(180deg);
+        }
+
+        .heart-seal {
+            width: 45px;
+            height: 45px;
+            background: #c41e3a;
+            position: absolute;
+            top: 40%;
+            left: 50%;
+            transform: translate(-50%, -50%) rotate(45deg);
+            transition: opacity 0.6s ease;
+            z-index: 6;
+        }
+
+        .heart-seal:before,
+        .heart-seal:after {
+            content: '';
+            width: 45px;
+            height: 45px;
+            background: #c41e3a;
+            border-radius: 50%;
+            position: absolute;
+        }
+
+        .heart-seal:before {
+            top: -22.5px;
+            left: 0;
+        }
+
+        .heart-seal:after {
+            top: 0;
+            left: -22.5px;
+        }
+
+        .envelope.opened .heart-seal {
+            opacity: 0;
+        }
+
+        .letter {
+            width: 400px;
+            max-width: 90vw;
+            background: #fffef7;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, 200%);
+            opacity: 0;
+            transition: all 1s ease;
+            max-height: 80vh;
+            overflow-y: auto;
+            border: 1px solid #d4a574;
+            z-index: 100;
+            pointer-events: none;
+        }
+
+        .letter.show {
+            transform: translate(-50%, -50%);
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .letter h1 {
+            color: #8b4513;
+            font-size: 26px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .letter p {
+            color: #333;
+            line-height: 1.8;
+            margin-bottom: 15px;
+            font-size: 16px;
+        }
+
+        .signature {
+            text-align: right;
+            font-style: italic;
+            margin-top: 30px;
+            color: #8b4513;
+            font-size: 18px;
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            width: 35px;
+            height: 35px;
+            background: #8b4513;
+            border: none;
+            border-radius: 50%;
+            color: white;
+            font-size: 20px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+        }
+
+        .close-btn:hover {
+            background: #6d3410;
+            transform: scale(1.1);
+        }
+
+        .music-control {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: rgba(255,255,255,0.2);
+            border: 2px solid rgba(255,255,255,0.3);
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+            z-index: 100;
+        }
+
+        .music-control:hover {
+            background: rgba(255,255,255,0.3);
+            transform: scale(1.1);
+        }
+
+        .music-control svg {
+            fill: white;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                gap: 40px;
+            }
+            .envelope-wrapper {
+                width: 220px;
+                height: 150px;
+            }
+            .envelope-flap {
+                border-left: 110px solid transparent;
+                border-right: 110px solid transparent;
+                border-top: 75px solid #d4a574;
+            }
+            .envelope-flap-inner {
+                border-left: 107px solid transparent;
+                border-right: 107px solid transparent;
+                border-top: 72px solid #f4e8d8;
+                top: -72px;
+                left: -107px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="stars" id="stars"></div>
+
+    <div class="container">
+        <!-- First Envelope: If you're angry -->
+        <div class="envelope-container">
+            <div class="envelope-label">Open if you are angry with me</div>
+            <div class="envelope-wrapper">
+                <div class="envelope" id="envelope1">
+                    <div class="envelope-base"></div>
+                    <div class="envelope-flap">
+                        <div class="envelope-flap-inner"></div>
+                    </div>
+                    <div class="heart-seal"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Second Envelope: If you love me -->
+        <div class="envelope-container">
+            <div class="envelope-label">Open if you love me</div>
+            <div class="envelope-wrapper">
+                <div class="envelope" id="envelope2">
+                    <div class="envelope-base"></div>
+                    <div class="envelope-flap">
+                        <div class="envelope-flap-inner"></div>
+                    </div>
+                    <div class="heart-seal"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Letter for "angry" envelope -->
+    <div class="letter" id="letter1">
+        <button class="close-btn" id="closeBtn1">×</button>
+        <h1>I'm So Sorry 💔</h1>
+        <p>I know I've upset you, and I'm truly sorry. Whatever I did to hurt you, please know it was never my intention. You mean everything to me, and the last thing I ever want is to see you unhappy, especially because of something I did.</p>
+        
+        <p>I'm not perfect, and sometimes I make mistakes. But what I am is someone who loves you deeply and completely. I'm willing to do whatever it takes to make things right between us.</p>
+        
+        <p>Your happiness is my happiness, and your sadness breaks my heart. Please forgive me. Let's talk about it, and I promise to listen, to understand, and to be better.</p>
+        
+        <p>I love you more than words can say, and I hate that I've made you feel this way. You deserve all the love and kindness in the world, and I want to be the one to give it to you.</p>
+        
+        <div class="signature">With all my love and deepest apologies,<br>Your Love</div>
+    </div>
+
+    <!-- Letter for "love" envelope -->
+    <div class="letter" id="letter2">
+        <button class="close-btn" id="closeBtn2">×</button>
+        <h1>To My Dearest Love ❤️</h1>
+        <p>Every moment with you feels like a beautiful dream that I never want to end. Your smile brightens my darkest days, and your laughter is the sweetest melody my heart has ever known.</p>
+        
+        <p>I want you to know that you mean the world to me. In your eyes, I found my home. In your heart, I found my love. In your soul, I found my mate.</p>
+        
+        <p>Thank you for being you – for your kindness, your warmth, and the way you make everything better just by being there. You are my today and all of my tomorrows.</p>
+        
+        <p>I love you more than words could ever express, more than actions could ever show, and more than time could ever measure. You are my everything, my reason for smiling, my reason for being better every single day.</p>
+        
+        <div class="signature">Forever and always yours,<br>Your Love</div>
+    </div>
+
+    <div class="music-control" id="musicControl">
+        <svg width="24" height="24" viewBox="0 0 24 24">
+            <path id="playIcon" d="M8 5v14l11-7z"/>
+            <path id="pauseIcon" d="M6 4h4v16H6V4zm8 0h4v16h-4V4z" style="display:none;"/>
+        </svg>
+    </div>
+
+    <audio id="bgMusic" loop>
+        <source src="song.mp3" type="audio/mpeg">
+        Your browser does not support the audio element.
+    </audio>
+
+    <script>
+        // Create floating stars
+        const starsContainer = document.getElementById('stars');
+        
+        for (let i = 0; i < 150; i++) {
+            const star = document.createElement('div');
+            star.className = 'star';
+            const size = Math.random() * 3 + 1;
+            star.style.width = size + 'px';
+            star.style.height = size + 'px';
+            star.style.left = Math.random() * 100 + '%';
+            star.style.top = Math.random() * 100 + '%';
+            star.style.animationDelay = Math.random() * 3 + 's';
+            star.style.animationDuration = (Math.random() * 10 + 15) + 's';
+            starsContainer.appendChild(star);
+        }
+
+        // Create shooting stars
+        for (let i = 0; i < 3; i++) {
+            const shootingStar = document.createElement('div');
+            shootingStar.className = 'shooting-star';
+            shootingStar.style.left = Math.random() * 100 + '%';
+            shootingStar.style.top = Math.random() * 50 + '%';
+            shootingStar.style.animationDelay = (Math.random() * 5 + i * 3) + 's';
+            shootingStar.style.animationDuration = (Math.random() * 2 + 2) + 's';
+            starsContainer.appendChild(shootingStar);
+        }
+
+        const music = document.getElementById('bgMusic');
+
+        // Envelope 1 functionality (angry)
+        const envelope1 = document.getElementById('envelope1');
+        const letter1 = document.getElementById('letter1');
+        const closeBtn1 = document.getElementById('closeBtn1');
+        let isOpen1 = false;
+
+        envelope1.addEventListener('click', function() {
+            if (!isOpen1) {
+                envelope1.classList.add('opened');
+                
+                setTimeout(() => {
+                    letter1.classList.add('show');
+                }, 400);
+                
+                music.play().catch(e => console.log('Music autoplay prevented'));
+                
+                isOpen1 = true;
+            }
+        });
+
+        closeBtn1.addEventListener('click', function(e) {
+            e.stopPropagation();
+            letter1.classList.remove('show');
+            
+            setTimeout(() => {
+                envelope1.classList.remove('opened');
+                isOpen1 = false;
+            }, 600);
+        });
+
+        // Envelope 2 functionality (love)
+        const envelope2 = document.getElementById('envelope2');
+        const letter2 = document.getElementById('letter2');
+        const closeBtn2 = document.getElementById('closeBtn2');
+        let isOpen2 = false;
+
+        envelope2.addEventListener('click', function() {
+            if (!isOpen2) {
+                envelope2.classList.add('opened');
+                
+                setTimeout(() => {
+                    letter2.classList.add('show');
+                }, 400);
+                
+                music.play().catch(e => console.log('Music autoplay prevented'));
+                
+                isOpen2 = true;
+            }
+        });
+
+        closeBtn2.addEventListener('click', function(e) {
+            e.stopPropagation();
+            letter2.classList.remove('show');
+            
+            setTimeout(() => {
+                envelope2.classList.remove('opened');
+                isOpen2 = false;
+            }, 600);
+        });
+
+        // Music control
+        const musicControl = document.getElementById('musicControl');
+        const playIcon = document.getElementById('playIcon');
+        const pauseIcon = document.getElementById('pauseIcon');
+
+        musicControl.addEventListener('click', function() {
+            if (music.paused) {
+                music.play();
+                playIcon.style.display = 'none';
+                pauseIcon.style.display = 'block';
+            } else {
+                music.pause();
+                playIcon.style.display = 'block';
+                pauseIcon.style.display = 'none';
+            }
+        });
+
+        music.addEventListener('play', function() {
+            playIcon.style.display = 'none';
+            pauseIcon.style.display = 'block';
+        });
+
+        music.addEventListener('pause', function() {
+            playIcon.style.display = 'block';
+            pauseIcon.style.display = 'none';
+        });
+    </script>
+</body>
+</html>

@@ -341,6 +341,20 @@
                 </div>
             </div>
         </div>
+
+        <!-- Third Envelope: When you miss me -->
+        <div class="envelope-container">
+            <div class="envelope-label">Open if you miss me</div>
+            <div class="envelope-wrapper">
+                <div class="envelope" id="envelope3">
+                    <div class="envelope-base"></div>
+                    <div class="envelope-flap">
+                        <div class="envelope-flap-inner"></div>
+                    </div>
+                    <div class="heart-seal"></div>
+                </div>
+            </div>
+        </div>
     </div>
 
     <!-- Letter for "angry" envelope -->
@@ -383,6 +397,32 @@
            I love you Prachi ❤️</p>
         
         <div class="signature">Forever and always yours,<br>Your chodbhangda krne wala</div>
+    </div>
+
+    <!-- Letter for "miss me" envelope -->
+    <div class="letter" id="letter3">
+        <button class="close-btn" id="closeBtn3">×</button>
+        <h1>If You Miss Me 💫</h1>
+        <p>Prachi tum humesha kehti ho ki tumhe agr koi apni khusi mei yaad kare toh tumhe boht acha lgta hai Lekin
+           Abhi iss time mere life mei aisi koi chiz nahi hai jo mujhe excite karti hai naa hi kuch aisa hai jisse mujhe khusi milti hai 
+           Isiliye mai chahta tha ki tum abhi mere sath rho i always wanted you to be there in my low times of my life 
+           Tumhe maine har ek chiz batayi thi jisse mujhe bura lgta hai tumne batya bhi tha ki un chizo se kaise deal krna hai lekin in sab ka kya fayda hua ?
+           Jab tum hi thi jiske wjh se un chizo se deal krna pde 
+           Mujhe pta h tum aaogi, yeh meri gut feeling hai aur agr abhi aaogi toh kabhi nahi jaogi mujhe pta hai
+           If you ever valued me toh tum aaogi 
+           Agr iss breakup se tumhe bhi utna hi fark padta hai jitna mujhe pd rha hai toh tum aaogi agr nahi aaogi toh mujhe itna pta rahega ki i was never meant for you 
+           Mere liye tum boht kuch ho but this time i want to see you coming back to me isliye nahi kyuki koi ego wego hai 
+           Mujhe bs itna dekhna hai ki meri kimat kitni hai tumhare liye 
+           Agr tumhe jaana hai toh chali jao 
+           After you i am not going to see anyone else because ab jo bhi hogi she will find me at the right time but i wanted you to be in this part of my life 
+           Aajana prachi 
+           Jldi aajana 
+           Mujhe din nahi ginne 
+           Boht bura lgta hai 
+           Boht pyar krta hu tumse
+        </p>
+        
+        <div class="signature">Missing you always,<br>Your Sanu 💕</div>
     </div>
 
     <div class="music-control" id="musicControl">
@@ -484,6 +524,36 @@
             setTimeout(() => {
                 envelope2.classList.remove('opened');
                 isOpen2 = false;
+            }, 600);
+        });
+
+        // Envelope 3 functionality (miss me)
+        const envelope3 = document.getElementById('envelope3');
+        const letter3 = document.getElementById('letter3');
+        const closeBtn3 = document.getElementById('closeBtn3');
+        let isOpen3 = false;
+
+        envelope3.addEventListener('click', function() {
+            if (!isOpen3) {
+                envelope3.classList.add('opened');
+                
+                setTimeout(() => {
+                    letter3.classList.add('show');
+                }, 400);
+                
+                music.play().catch(e => console.log('Music autoplay prevented'));
+                
+                isOpen3 = true;
+            }
+        });
+
+        closeBtn3.addEventListener('click', function(e) {
+            e.stopPropagation();
+            letter3.classList.remove('show');
+            
+            setTimeout(() => {
+                envelope3.classList.remove('opened');
+                isOpen3 = false;
             }, 600);
         });
 
